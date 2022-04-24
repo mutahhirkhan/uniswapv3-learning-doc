@@ -82,7 +82,7 @@ Qs: why only at adding or removing liquidity ? not wehn the swapping performs, i
 Using 𝐿 and √ 𝑃 is convenient because only one of them changes at a time. Price Changes when swapping within a position; liquidity changes when moving outside of the position or when liquidity is minted or burned. 
 Alternatively, liquidity can be considered the amount that token1 reserves change for a given change in √ 𝑃.
 The contract needs to store information about each tick to track the amount of net liquidity that should be added or removed when the tick is crossed and track the fees earned above and below that tick.  When ticks are updated, the variables present in the tick-indexed state are updated. You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower.
-Word bounderies arent multiple of 256
+Word boundaries are not multiple of 256
 You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower
 Swap function takes the address of the swapper (recipient), The direction of the swap, true for token0 to token1, false for token1 to token0 (zeroForOne), the amount of the swap, which implicitly configures the amount as exact input and output (amountSpecified), the value for input will be positive while negative for output.
 
