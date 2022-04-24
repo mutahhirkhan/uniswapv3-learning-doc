@@ -1,0 +1,99 @@
+
+If virtual reserves and real reserves are overlapping each other than the liquidity in pool shall be increase by twice, isn’t it ?
+—--------
+
+2nd point
+—--------------
+NON-FUNGIBLE LIQUIDITY
+As a result, in v3, the pool contract does not implement the ERC-20 standard. Anyone can create an ERC-20 token contract in the periphery that makes a liquidity position more fungible, but it will have to have additional logic to handle distribution of, or reinvestment of, collected fees. Alternatively, anyone could create a periphery contract that wraps an individual liquidity position (including collected fees) in an ERC-721 non-fungible token.
+
+So it means LPTokens are erc721 which can be converted to erc20 tokens using the periphery contracts by paying the fees ? 
+—------------------
+A pool in Uniswap v2 stores only the most recent value of this price accumulator—that is, the value as of the last block in which a swap occurred. When computing average prices in Uniswap v2, it is the responsibility of the external caller to provide the previous value of the price accumulator. With many users, each will have to provide their own methodology for checkpointing previous values of the accumulator, or coordinate on a shared method to reduce  costs. And there is no way to guarantee that every block in which the pool is touched will be reflected in the accumulator.
+
+Last 2 lines
+—-----------
+
+Where does this tick spacing come from, how is it calculated ?
+—----------------
+Fees. Each pool is initialized with an immutable value, fee (𝛾), representing the fee paid by swappers in units of hundredths of a basis point (0.0001%).
+—----------------
+Virtual liquidity me swapping fee kisko jaati he ?
+—---------------
+Ticks are the boundaries between discrete areas in price space. Ticks are spaced such that an increase or decrease of 1 tick represents a 0.01% (1 basis point) increase or decrease in price at any point in price space. Ticks function as boundaries for liquidity positions
+—------------
+𝑓𝑜 := 𝑓𝑔 − 𝑓𝑜
+What does this sign mean := ?
+—------------
+setPosition. The setPosition function allows a liquidity provider to update their position. Two of the arguments to setPosition —lowerTick and upperTick— when combined with the msg.sender, together specify a position. The function takes one additional parameter, liquidityDelta, to specify how much virtual liquidity the user wants to add or (if negative) remove
+—------------
+In-range liquidity refers to the liquidity contained in any positions which span both sides of the spot price.
+—------------
+Range orders: 
+An approximation of a limit order, in which a single asset is provided as liquidity across a specified range, and is continuously swapped to the destination address as the spot price crosses the range.
+—-------------
+Whitepaper end
+—-------------
+First articles:
+For concentrated liquidity to work, Uniswap has created ticks, which are used to keep liquidity within a specific price range. Every tick has its own set of liquidity provider tokens. Technically, smaller trades shouldn’t need to span more than one tick, but larger ones or those with higher slippage can encompass multiple ones, once liquidity from the initial tick is exhausted.
+—-------------
+Lets say there are 3 pools of pair eth/dai having 10k liquidity in each with all three price tiers i.e. 1000, 500, 3000. If i want to swap 20k dai to eth, what would happened, do i shift from 0.30% to 0.01% means this is another way how slippage works in v3 ? 
+—-------------
+Buy Limit Orders​
+The Current price of a DAI / ETH pool is 1,500 DAI / ETH. You expect that ETH will rebound after it drops to 1,000 at the next market downturn, so you would like to place a range order swapping DAI to ETH at the price of 1,000 DAI / ETH. This is possible, as the price space below the spot price is denominated in the lower-priced asset, DAI. You can provide DAI at the price of 1,000 DAI / ETH, which will be swapped for ETH when the spot price of ETH drops past 1,000 DAI / ETH.
+As the above examples show, in Uniswap V3, the two paired assets in a given pool are separated above and below the spot price, with the higher price asset available above the spot price and the lower-priced asset below.
+—---------------
+
+ As an illustration, consider the following example. Consider an ETH-USDC pool and assume the current price of ETH is 2000 USDC. Two liquidity providers 𝐴 and 𝐵 both start with a position worth 1000 USDC. LP 𝐴 chooses the range [1818, 2200], while LP 𝐵 chooses [1667, 2400]. According to (1), this means that they provide about 240 and 128 units of liquidity, respectively. If ETH’s price now falls to 1900, the position of LP 𝐴 will consist of 288.23 USDC and ETH worth 739.40 USDC which adds up to 967.63 USDC. LP 𝐵’s position on the other hand consists of 354.54 USDC and ETH worth 617.27 USDC, i.e. 971.81 USDC in total. In particular, the LP with the smaller interval suffered a larger loss. On the other hand, LP A earns 240/128 = 1.875 times more fees on trades occurring in the range [1818, 2200] than LP 
+
+Qs is, how the liquidity units be calculated in scenario for A and B
+—---------------
+FIXED INTERVAL: For ETH-USDC pools, we choose 𝑎 ∈ [0.6%, 100%] where 𝑎 grows in steps of 0.6%. For USDT-USDC pools, we choose 𝑎 ∈ [0.1%, 50%] where 𝑎 grows in steps of 0.1%. We choose these values to match the precision with which LPs can choose ranges in Uniswap v3. There, the tick spacing is 60 and 10 for ETH-USDC and USDT-USDC pools, respectively. So for the latter pools, the smallest possible ratio between interval bounds is 1.000110 ≈ 1 + 0.1%.
+—---------------
+What is suboptimal trading ? (something related to stable tokens pair)
+—---------------
+Total Volume of SWAP (Tick 7 -> Tick 9) = Volume of SWAP (Tick 7-> Tick 8) + Volume of SWAP (Tick 8 -> Tick 9)
+Bob earns the percent of capital provided by Bob between ticks 7 and 8, plus the percent of capital provided by Bob between ticks 8 and 9, times the fees collected from the trade in those ranges.
+—---------------
+For a concrete example, let’s suppose Alice wants to provide liquidity in the DAI/ETH pool from 2000 to 4000. The exact powers using base 1.0001 to get to exactly 44.7213595 and 63.24555 (the square roots of 2000 and 4000 respectively) are not integers. The closest i’s Alice could pick would be 76013 and 82945, so Alice’s price range would actually be from 2000.035002 to 4000.142653, depending on how granular the pool allows its indexes to be (they can be further restricted to be divisible by some integer).
+
+Qs is, how are these ticks calculated ?
+—----------------------
+
+Source: Uniswap v3 whitepaper
+Here f_r means the total fees in a range defined by i_l, the lower tick, and i_u, the upper tick. It says the range’s fees are equal to the total fees generated minus the fees below (f_b) the range’s low tick and the fees above (f_a) the range's high tick.
+
+—-------------------
+
+With the above equation, the tick/price range can be recorded in the index form [i, i+1], instead of some crazy numbers such as 1.0001¹⁰⁰ = 1.0100496621.
+As each price is the multiplication of 1.0001 of the previous price, the price change is always 1.0001 — 1 = 0.0001 = 0.01%.
+For example, when i=1, p(1) = 1.0001; when i=2, p(2) = 1.00020001.
+p(2) / p(1) = 1.00020001 / 1.0001 = 1.0001
+See the connection between the traditional basis point 1 cent (=1% of 1$) and Uniswap v3’s basis point 0.01%?
+
+—--------------------
+Xord article:
+Let's say that L is the amount of liquidity provided in position, equal to √ 𝑘. (it is a simple change in notation).
+When the current ratio moves left concerning the current position, token0 (the amount of token0 in the pool) changes if the current ratio moves right concerning the current position, the amount of token1 changes. 
+
+In terms of smart contracts, the assets' conversion is only done when adding or removing liquidity.
+
+Qs: why only at adding or removing liquidity ? not wehn the swapping performs, it does change the reserves in the pool.
+Using 𝐿 and √ 𝑃 is convenient because only one of them changes at a time. Price Changes when swapping within a position; liquidity changes when moving outside of the position or when liquidity is minted or burned. 
+Alternatively, liquidity can be considered the amount that token1 reserves change for a given change in √ 𝑃.
+The contract needs to store information about each tick to track the amount of net liquidity that should be added or removed when the tick is crossed and track the fees earned above and below that tick.  When ticks are updated, the variables present in the tick-indexed state are updated. You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower.
+Word bounderies arent multiple of 256
+You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower
+Swap function takes the address of the swapper (recipient), The direction of the swap, true for token0 to token1, false for token1 to token0 (zeroForOne), the amount of the swap, which implicitly configures the amount as exact input and output (amountSpecified), the value for input will be positive while negative for output.
+
+DONE:
+Uniswap v3 whitepaper
+docs
+Video tutorials (finamatics, whiteboard crypto)
+https://10clouds.com/blog/defi/uniswap-v3-explained/#
+https://arxiv.org/pdf/2110.01368 (revision req.)
+https://credmark.com/blog/a-technical-analysis-of-uniswap-v3
+https://ryanjameskim.medium.com/uniswap-v3-part-2-ticks-and-fee-acounting-explainer-with-toy-example-e9bf4d706884
+
+
+	
