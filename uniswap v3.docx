@@ -91,8 +91,9 @@ Uncollected fee(y) = L . (feeGrowthInside - feeGrowthInsideLast)
 Uncollected fee(x) = L / (1/ feeGrowthInside - 1/ feeGrowthInsideLast)
 The positions are keeping track of how much fees have been earned in feeGrowthInside{0,1} the Last variable. Whereas, to calculate the latest amount of fees, the current state of ticks is used. Subtracting both values will give us the difference and increase in change. Multiplying this by the position's liquidity gives us the total uncollected fees in token0 for this position.
 
-
-
+End of Xord article
+—--------------------
+The reason for a signed integer int instead of an uint is that negative power represents prices less than 1 but greater than 0
 
 
 
@@ -103,10 +104,9 @@ Video tutorials (finamatics, whiteboard crypto)
 https://10clouds.com/blog/defi/uniswap-v3-explained/#
 https://arxiv.org/pdf/2110.01368 (revision req.)
 https://credmark.com/blog/a-technical-analysis-of-uniswap-v3
-https://ryanjameskim.medium.com/uniswap-v3-part-2-ticks-and-fee-acounting-explainer-with-toy-example-e9bf4d706884 
+https://ryanjameskim.medium.com/uniswap-v3-part-2-ticks-and-fee-acounting-explainer-with-toy-example-e9bf4d706884 (revision req.)
 https://xord.com/research/uniswap-v3-power-to-liquidity-providers/
 https://levelup.gitconnected.com/whats-new-in-uniswap-v3-a04a8f2673bb
-
-
+Zero knowledge podcast https://zeroknowledge.fm/185-2/ 
 
 	
