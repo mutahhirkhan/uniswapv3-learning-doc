@@ -85,6 +85,16 @@ The contract needs to store information about each tick to track the amount of n
 Word boundaries are not multiple of 256
 You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower
 Swap function takes the address of the swapper (recipient), The direction of the swap, true for token0 to token1, false for token1 to token0 (zeroForOne), the amount of the swap, which implicitly configures the amount as exact input and output (amountSpecified), the value for input will be positive while negative for output.
+Now, we have the accumulated fee inside a range. But, many liquidity providers may have provided different liquidity values in the same range. The token protocol owed to them will differ now.
+The amount of tokens owed to LPs in a range is calculated in the positions library. This makes use of the formula.
+Uncollected fee(y) = L . (feeGrowthInside - feeGrowthInsideLast)
+Uncollected fee(x) = L / (1/ feeGrowthInside - 1/ feeGrowthInsideLast)
+The positions are keeping track of how much fees have been earned in feeGrowthInside{0,1} the Last variable. Whereas, to calculate the latest amount of fees, the current state of ticks is used. Subtracting both values will give us the difference and increase in change. Multiplying this by the position's liquidity gives us the total uncollected fees in token0 for this position.
+
+
+
+
+
 
 DONE:
 Uniswap v3 whitepaper
