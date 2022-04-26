@@ -93,7 +93,11 @@ The positions are keeping track of how much fees have been earned in feeGrowthIn
 
 End of Xord article
 —--------------------
+TAIPAI article
+—--------------------
 The reason for a signed integer int instead of an uint is that negative power represents prices less than 1 but greater than 0
+The concept of having a targeted price and the order will be executed after the price is crossed is exactly the concept of limit orders! The only difference is that if the range of a range order is not narrow enough, it’s highly possible that the conversion of tokens will be reverted once the price falls back to the range.
+Thus, providing liquidity on v3, namely range orders, are essentially fee-earning reversible limit orders.
 
 
 
@@ -107,6 +111,9 @@ https://credmark.com/blog/a-technical-analysis-of-uniswap-v3
 https://ryanjameskim.medium.com/uniswap-v3-part-2-ticks-and-fee-acounting-explainer-with-toy-example-e9bf4d706884 (revision req.)
 https://xord.com/research/uniswap-v3-power-to-liquidity-providers/
 https://levelup.gitconnected.com/whats-new-in-uniswap-v3-a04a8f2673bb
-Zero knowledge podcast https://zeroknowledge.fm/185-2/ 
+Zero knowledge podcast https://zeroknowledge.fm/185-2/ (12 mints)
+https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223
+
+
 
 	
