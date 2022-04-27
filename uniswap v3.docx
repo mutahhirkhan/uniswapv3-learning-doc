@@ -113,8 +113,12 @@ https://ryanjameskim.medium.com/uniswap-v3-part-2-ticks-and-fee-acounting-explai
 https://xord.com/research/uniswap-v3-power-to-liquidity-providers/
 https://levelup.gitconnected.com/whats-new-in-uniswap-v3-a04a8f2673bb
 Zero knowledge podcast https://zeroknowledge.fm/185-2/ (12 mints)
-https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223
+https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223 (revision req.)
+https://medium.com/@jarekcoding/math-behind-uniswap-swap-part1-88dcc18a9612
 
 
 
+
+	How is tick spacing directly proportional to swap fee ? lets say alice create pool of ETH/DAI with 0.05% of swap fees then this statement would be falsify 
 	
+	Does x * y = k calculated after every swap takes place ? if not then how can AMM determine the real reserves ? 
