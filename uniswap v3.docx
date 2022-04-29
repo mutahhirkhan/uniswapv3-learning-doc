@@ -111,8 +111,7 @@ When the fee is 0.05% which has a tick spacing of 10, it means from first tick t
 QS: what if i created a pool of two highly volatile assets e.g. shib/sol, on a fee tier of 0.05%, what is its impact on tickspacing and swapping ?. 
 
 
-
-
+Instead of tracking price which is the ratio of two assets, we are tracking the sqrt of price. sqrt(1.0001)**x. This formula lets us to track the sqrt of price
 
 
 
