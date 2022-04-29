@@ -98,6 +98,18 @@ TAIPAI article
 The reason for a signed integer int instead of an uint is that negative power represents prices less than 1 but greater than 0
 The concept of having a targeted price and the order will be executed after the price is crossed is exactly the concept of limit orders! The only difference is that if the range of a range order is not narrow enough, it’s highly possible that the conversion of tokens will be reverted once the price falls back to the range.
 Thus, providing liquidity on v3, namely range orders, are essentially fee-earning reversible limit orders.
+Calculate token Price:  https://www.publish0x.com/dalz-blog/an-example-how-uniswap-calculate-the-price-of-the-tokens-and-xvrnxjd 
+TokenPrice = (100 ETH * ETH Price) / 100k TokenA
+ 
+
+NOAH talk
+
+
+Going from 0 to 2 means a +0.20% price increment 
+
+
+
+
 
 
 
