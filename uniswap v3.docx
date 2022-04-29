@@ -107,6 +107,9 @@ NOAH talk
 
 Going from 0 to 2 means a +0.20% price increment 
 
+When the fee is 0.05% which has a tick spacing of 10, it means from first tick to second tick there are 9 empty ticks on which while swapping you easily jump and reach from first price point to the second price point.
+QS: what if i created a pool of two highly volatile assets e.g. shib/sol, on a fee tier of 0.05%, what is its impact on tickspacing and swapping ?. 
+
 
 
 
