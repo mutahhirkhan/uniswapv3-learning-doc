@@ -105,6 +105,30 @@ TokenPrice = (100 ETH * ETH Price) / 100k TokenA
 NOAH talk
 
 
+		|-------|-------|-------|
+ticks:	0		1		2		3
+
+fake example with 1% ticks:
+
+price @ 0th tick: 1.01**x = 1.01**0 = 1
+price @ 1st tick: 1.01**x = 1.01**1 = 1.01
+price @ 2nd tick: 1.01**x = 1.01**2 = 1.0201
+
+basically limits the no. of intermediate ticks that you can add liq. at
+E.g. not allwoed to add liq. at 1 so you can only add 0 or 2 , 
+trade b/w 0 and 2 are basically they don;t have this fixed cost
+that sassociated that crosses this 1 tick, so now 
+
+real example with 1% ticks:
+sqrt(1.0001)**x
+
+x * y = k (L**2)
+
+sqrt(x * y) = L
+
+
+
+
 Going from 0 to 2 means a +0.20% price increment 
 
 When the fee is 0.05% which has a tick spacing of 10, it means from first tick to second tick there are 9 empty ticks on which while swapping you easily jump and reach from first price point to the second price point.
