@@ -105,6 +105,7 @@ TokenPrice = (100 ETH * ETH Price) / 100k TokenA
 NOAH talk
 
 
+
 		|-------|-------|-------|
 ticks:	0		1		2		3
 
@@ -125,7 +126,6 @@ sqrt(1.0001)**x
 x * y = k (L**2)
 
 sqrt(x * y) = L
-
 
 
 
@@ -154,8 +154,7 @@ Zero knowledge podcast https://zeroknowledge.fm/185-2/ (12 mints)
 https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223 (revision req.)
 https://medium.com/@jarekcoding/math-behind-uniswap-swap-part1-88dcc18a9612
 https://medium.com/@jarekcoding/math-behind-uniswap-swap-part2-d51d6a37ce89
-
-
+https://drive.google.com/file/d/1dRifSAXxc-6HKCKH8tcygEmHxJTKAlxp/view 
 
 
 
