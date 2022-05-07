@@ -138,6 +138,25 @@ QS: what if i created a pool of two highly volatile assets e.g. shib/sol, on a f
 Instead of tracking price which is the ratio of two assets, we are tracking the sqrt of price. sqrt(1.0001)**x. This formula lets us to track the sqrt of price
 
 
+END OF NOAH TALK
+—--------------------------------
+ORACLES
+V3 docs
+Ticks are signed integers and can be expressed as a negative number, so for any circumstances where token0 is of a lower value than token1, a negative tick value will be returned by tickCumulative and a relative value of < 0 will be returned by a calculation of token0 in terms of token1.
+An example of finding the price of WETH in a WETH / USDC pool, where WETH is token0 and USDC is token1:
+
+You have an oracle reading that shows a return of tickCumulative as [70_000, 1_070_000], with an elapsed time between the observations of 10 seconds.We can derive the average tick over this interval by taking the difference in accumulator values (1_070_000 - 70_000 = 1_000_000), and dividing by the time elapsed (1_000_000 / 10 = 100_000).
+
+With a tick reading of 100_000, we can find the value of token1 (USDC) in terms of token0 (WETH) by using the current tick as i in the formula p(i) = 1.0001**i (see 6.1 in the whitepaper).
+
+1.0001**100_000 ≅ 22015.5 USDC / WETH
+
+
+
+
+
+
+
 
 DONE:
 Uniswap v3 whitepaper
