@@ -121,6 +121,13 @@ written somewhere that:  active vaults perform much better when fees/liquidity r
 As we can see the returns of a rebalancing strategy depend on the level of realized return volatility. The strategy is expected to outperform in a trending market but underperform in a choppy market.
 Cost of uniswap active management
 First, let’s look at the number of resets implied by the strategy. As we described before, with a longer time interval, fewer resets are required. The very volatile month of May leads the numbers of resets, with 1,876 for the 10-minute interval, 236 for 120-minute interval, and 63 for 1,440-minute interval. The relatively quiet month of June required much fewer resets (852, 87, and 18 respectively), thus as predicted in the beginning, periods with more price volatility imply more resets.
+10 minutes rebase = 1008 rebases in a week (144/day)
+30 minutes rebase = 336   rebases in a week (24/day) 
+350,000 Gwei for setting or removing positions in uniswap v3 
+
+
+
+
 
 
 
@@ -152,6 +159,7 @@ Mudassir bhai given
 https://medium.com/gamma-strategies/expected-price-range-strategies-in-uniswap-v3-833dff253f84 
 https://medium.com/charmfinance/introducing-alpha-vaults-an-lp-strategy-for-uniswap-v3-ebf500b67796 
 https://medium.com/@DeFiScientist/rebalancing-vs-passive-strategies-for-uniswap-v3-liquidity-pools-754f033bdabc ( simulating returns is not fully clear ) 
+https://medium.com/gamma-strategies/the-costs-of-uniswap-v3-active-management-7dd1c160fdd 
 
 
 
