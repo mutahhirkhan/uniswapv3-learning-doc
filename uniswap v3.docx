@@ -1,8 +1,3 @@
-
-If virtual reserves and real reserves are overlapping each other than the liquidity in pool shall be increase by twice, isn’t it ?
-—--------
-
-2nd point
 —--------------
 NON-FUNGIBLE LIQUIDITY
 As a result, in v3, the pool contract does not implement the ERC-20 standard. Anyone can create an ERC-20 token contract in the periphery that makes a liquidity position more fungible, but it will have to have additional logic to handle distribution of, or reinvestment of, collected fees. Alternatively, anyone could create a periphery contract that wraps an individual liquidity position (including collected fees) in an ERC-721 non-fungible token.
@@ -13,36 +8,12 @@ A pool in Uniswap v2 stores only the most recent value of this price accumulator
 
 Last 2 lines
 —-----------
-
-Where does this tick spacing come from, how is it calculated ?
-—----------------
-Fees. Each pool is initialized with an immutable value, fee (𝛾), representing the fee paid by swappers in units of hundredths of a basis point (0.0001%).
-—----------------
-Virtual liquidity me swapping fee kisko jaati he ?
-—---------------
-Ticks are the boundaries between discrete areas in price space. Ticks are spaced such that an increase or decrease of 1 tick represents a 0.01% (1 basis point) increase or decrease in price at any point in price space. Ticks function as boundaries for liquidity positions
-—------------
-𝑓𝑜 := 𝑓𝑔 − 𝑓𝑜
-What does this sign mean := ?
-—------------
 setPosition. The setPosition function allows a liquidity provider to update their position. Two of the arguments to setPosition —lowerTick and upperTick— when combined with the msg.sender, together specify a position. The function takes one additional parameter, liquidityDelta, to specify how much virtual liquidity the user wants to add or (if negative) remove
 —------------
 In-range liquidity refers to the liquidity contained in any positions which span both sides of the spot price.
-—------------
-Range orders: 
-An approximation of a limit order, in which a single asset is provided as liquidity across a specified range, and is continuously swapped to the destination address as the spot price crosses the range.
 —-------------
 Whitepaper end
 —-------------
-First articles:
-For concentrated liquidity to work, Uniswap has created ticks, which are used to keep liquidity within a specific price range. Every tick has its own set of liquidity provider tokens. Technically, smaller trades shouldn’t need to span more than one tick, but larger ones or those with higher slippage can encompass multiple ones, once liquidity from the initial tick is exhausted.
-—-------------
-Lets say there are 3 pools of pair eth/dai having 10k liquidity in each with all three price tiers i.e. 1000, 500, 3000. If i want to swap 20k dai to eth, what would happened, do i shift from 0.30% to 0.01% means this is another way how slippage works in v3 ? 
-—-------------
-Buy Limit Orders​
-The Current price of a DAI / ETH pool is 1,500 DAI / ETH. You expect that ETH will rebound after it drops to 1,000 at the next market downturn, so you would like to place a range order swapping DAI to ETH at the price of 1,000 DAI / ETH. This is possible, as the price space below the spot price is denominated in the lower-priced asset, DAI. You can provide DAI at the price of 1,000 DAI / ETH, which will be swapped for ETH when the spot price of ETH drops past 1,000 DAI / ETH.
-As the above examples show, in Uniswap V3, the two paired assets in a given pool are separated above and below the spot price, with the higher price asset available above the spot price and the lower-priced asset below.
-—---------------
 
  As an illustration, consider the following example. Consider an ETH-USDC pool and assume the current price of ETH is 2000 USDC. Two liquidity providers 𝐴 and 𝐵 both start with a position worth 1000 USDC. LP 𝐴 chooses the range [1818, 2200], while LP 𝐵 chooses [1667, 2400]. According to (1), this means that they provide about 240 and 128 units of liquidity, respectively. If ETH’s price now falls to 1900, the position of LP 𝐴 will consist of 288.23 USDC and ETH worth 739.40 USDC which adds up to 967.63 USDC. LP 𝐵’s position on the other hand consists of 354.54 USDC and ETH worth 617.27 USDC, i.e. 971.81 USDC in total. In particular, the LP with the smaller interval suffered a larger loss. On the other hand, LP A earns 240/128 = 1.875 times more fees on trades occurring in the range [1818, 2200] than LP 
 
@@ -52,52 +23,30 @@ FIXED INTERVAL: For ETH-USDC pools, we choose 𝑎 ∈ [0.6%, 100%] where 𝑎 g
 —---------------
 What is suboptimal trading ? (something related to stable tokens pair)
 —---------------
-Total Volume of SWAP (Tick 7 -> Tick 9) = Volume of SWAP (Tick 7-> Tick 8) + Volume of SWAP (Tick 8 -> Tick 9)
-Bob earns the percent of capital provided by Bob between ticks 7 and 8, plus the percent of capital provided by Bob between ticks 8 and 9, times the fees collected from the trade in those ranges.
-—---------------
 For a concrete example, let’s suppose Alice wants to provide liquidity in the DAI/ETH pool from 2000 to 4000. The exact powers using base 1.0001 to get to exactly 44.7213595 and 63.24555 (the square roots of 2000 and 4000 respectively) are not integers. The closest i’s Alice could pick would be 76013 and 82945, so Alice’s price range would actually be from 2000.035002 to 4000.142653, depending on how granular the pool allows its indexes to be (they can be further restricted to be divisible by some integer).
 
 Qs is, how are these ticks calculated ?
-—----------------------
+—-----------------
 
 Source: Uniswap v3 whitepaper
 Here f_r means the total fees in a range defined by i_l, the lower tick, and i_u, the upper tick. It says the range’s fees are equal to the total fees generated minus the fees below (f_b) the range’s low tick and the fees above (f_a) the range's high tick.
 
 —-------------------
-
-With the above equation, the tick/price range can be recorded in the index form [i, i+1], instead of some crazy numbers such as 1.0001¹⁰⁰ = 1.0100496621.
-As each price is the multiplication of 1.0001 of the previous price, the price change is always 1.0001 — 1 = 0.0001 = 0.01%.
-For example, when i=1, p(1) = 1.0001; when i=2, p(2) = 1.00020001.
-p(2) / p(1) = 1.00020001 / 1.0001 = 1.0001
-See the connection between the traditional basis point 1 cent (=1% of 1$) and Uniswap v3’s basis point 0.01%?
-
-—--------------------
 Xord article:
-Let's say that L is the amount of liquidity provided in position, equal to √ 𝑘. (it is a simple change in notation).
-When the current ratio moves left concerning the current position, token0 (the amount of token0 in the pool) changes if the current ratio moves right concerning the current position, the amount of token1 changes. 
+When the current ratio moves left concerning the current position, token0 (the amount of token0 in the pool) changes; if the current ratio moves right concerning the current position, the amount of token1 changes. 
 
 In terms of smart contracts, the assets' conversion is only done when adding or removing liquidity.
 
 Qs: why only at adding or removing liquidity ? not wehn the swapping performs, it does change the reserves in the pool.
 Using 𝐿 and √ 𝑃 is convenient because only one of them changes at a time. Price Changes when swapping within a position; liquidity changes when moving outside of the position or when liquidity is minted or burned. 
 Alternatively, liquidity can be considered the amount that token1 reserves change for a given change in √ 𝑃.
-The contract needs to store information about each tick to track the amount of net liquidity that should be added or removed when the tick is crossed and track the fees earned above and below that tick.  When ticks are updated, the variables present in the tick-indexed state are updated. You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower.
-Word boundaries are not multiple of 256
-You can consider that after updating the global state of the contract, the pool is updating the fees collected and liquidity updated at the specific price point, which is tickUpper and tickLower
 Swap function takes the address of the swapper (recipient), The direction of the swap, true for token0 to token1, false for token1 to token0 (zeroForOne), the amount of the swap, which implicitly configures the amount as exact input and output (amountSpecified), the value for input will be positive while negative for output.
-Now, we have the accumulated fee inside a range. But, many liquidity providers may have provided different liquidity values in the same range. The token protocol owed to them will differ now.
-The amount of tokens owed to LPs in a range is calculated in the positions library. This makes use of the formula.
-Uncollected fee(y) = L . (feeGrowthInside - feeGrowthInsideLast)
-Uncollected fee(x) = L / (1/ feeGrowthInside - 1/ feeGrowthInsideLast)
-The positions are keeping track of how much fees have been earned in feeGrowthInside{0,1} the Last variable. Whereas, to calculate the latest amount of fees, the current state of ticks is used. Subtracting both values will give us the difference and increase in change. Multiplying this by the position's liquidity gives us the total uncollected fees in token0 for this position.
-
+ 
 End of Xord article
 —--------------------
 TAIPAI article
 —--------------------
 The reason for a signed integer int instead of an uint is that negative power represents prices less than 1 but greater than 0
-The concept of having a targeted price and the order will be executed after the price is crossed is exactly the concept of limit orders! The only difference is that if the range of a range order is not narrow enough, it’s highly possible that the conversion of tokens will be reverted once the price falls back to the range.
-Thus, providing liquidity on v3, namely range orders, are essentially fee-earning reversible limit orders.
 Calculate token Price:  https://www.publish0x.com/dalz-blog/an-example-how-uniswap-calculate-the-price-of-the-tokens-and-xvrnxjd 
 TokenPrice = (100 ETH * ETH Price) / 100k TokenA
  
@@ -105,38 +54,9 @@ TokenPrice = (100 ETH * ETH Price) / 100k TokenA
 NOAH talk
 
 
-
-		|-------|-------|-------|
-ticks:	0		1		2		3
-
-fake example with 1% ticks:
-
-price @ 0th tick: 1.01**x = 1.01**0 = 1
-price @ 1st tick: 1.01**x = 1.01**1 = 1.01
-price @ 2nd tick: 1.01**x = 1.01**2 = 1.0201
-
-basically limits the no. of intermediate ticks that you can add liq. at
-E.g. not allwoed to add liq. at 1 so you can only add 0 or 2 , 
-trade b/w 0 and 2 are basically they don;t have this fixed cost
-that sassociated that crosses this 1 tick, so now 
-
-real example with 1% ticks:
-sqrt(1.0001)**x
-
-x * y = k (L**2)
-
-sqrt(x * y) = L
-
-
-
 Going from 0 to 2 means a +0.20% price increment 
 
-When the fee is 0.05% which has a tick spacing of 10, it means from first tick to second tick there are 9 empty ticks on which while swapping you easily jump and reach from first price point to the second price point.
-QS: what if i created a pool of two highly volatile assets e.g. shib/sol, on a fee tier of 0.05%, what is its impact on tickspacing and swapping ?. 
-
-
 Instead of tracking price which is the ratio of two assets, we are tracking the sqrt of price. sqrt(1.0001)**x. This formula lets us to track the sqrt of price
-
 
 END OF NOAH TALK
 —--------------------------------
@@ -152,7 +72,26 @@ With a tick reading of 100_000, we can find the value of token1 (USDC) in terms 
 1.0001**100_000 ≅ 22015.5 USDC / WETH
 
 
+—-----------------------------
+L A T E S T
+Gamma strategies article
+The three strategies considered are:
+Uniform strategy: liquidity is provided uniformly within the expected price range, as is the default in Uniswap v3.
+Proportional strategy: liquidity within the expected price range is allocated in sub-bins within the range, with the intensity of a bin proportional to how likely the price is likely to be there according to Figure 6.
+Optimal strategy: using tools from decision theory, the authors develop a model to estimate the “optimal” range to provide liquidity over, having as a parameter the degree of “risk aversion” of the liquidity provider.
+DeFi Scientist article:
+The idea is to choose a base liquidity range symmetric around the current price [Current -B, Current+B] and to rebalance regularly (let’s assume twice a day). As the token price moves, our initial ratio (50/50 each asset) will drift. As our token price decreases, we buy more of the token and inversely as it increases.
 
+Now let’s assume that the price moves to X and that our portfolio is now composed of 70% T and 30% USDC. The strategy will post a new LP position at [X-B, X+B] for 30%USDC/30% T. The remaining extra 40% T is placed as a passive rebalancing order at [X,X+R] with R being the rebalancing range. At every rebalancing, we count the number of tokens we hold and redo the same process.
+The unique feature of Alpha Vaults is that it rebalances passively using range orders, which significantly improves its performance. (means no swap fee and price impact also)
+Rebalancing is necessary when providing concentrated liquidity on V3. For example, if you initially deposit 50% ETH and 50% USDC but the price moves a lot one way, you might be left with 80% ETH and 20% USDC. Then you’d need to somehow rebalance back to 50/50 so that you don’t run out of inventory on either side and can continue providing two-sided liquidity. One way to rebalance would be to aggressively rebalance by swapping ETH → USDC on Uniswap to get back to 50/50, but this incurs the 0.3% trading fee and price impact.
+
+Instead, Alpha Vaults only passively rebalances, placing a narrow range order on one side of the current price. This avoids the need to swap tokens and incur the fee and price impact.
+liquidity ratio high hoony ka mtlb kiya he ?
+written somewhere that:  active vaults perform much better when fees/liquidity ratio is high. so it would make sense to initially deploy strategies for those high earning pools only.
+As we can see the returns of a rebalancing strategy depend on the level of realized return volatility. The strategy is expected to outperform in a trending market but underperform in a choppy market.
+Cost of uniswap active management
+First, let’s look at the number of resets implied by the strategy. As we described before, with a longer time interval, fewer resets are required. The very volatile month of May leads the numbers of resets, with 1,876 for the 10-minute interval, 236 for 120-minute interval, and 63 for 1,440-minute interval. The relatively quiet month of June required much fewer resets (852, 87, and 18 respectively), thus as predicted in the beginning, periods with more price volatility imply more resets.
 
 
 
@@ -180,12 +119,19 @@ https://www.youtube.com/watch?v=_07eT2H_WVE
 https://www.youtube.com/watch?v=nCtJ0eqaEf0
 https://medium.com/blockchain-development-notes/a-guide-on-uniswap-v3-twap-oracle-2aa74a4a97c5 (to be continued)
 https://starli.medium.com/uniswap-deep-dive-into-v3s-source-code-b141c1754bae
+Mudassir bhai given
+https://medium.com/gamma-strategies/expected-price-range-strategies-in-uniswap-v3-833dff253f84 
+https://medium.com/charmfinance/introducing-alpha-vaults-an-lp-strategy-for-uniswap-v3-ebf500b67796 
+https://medium.com/@DeFiScientist/rebalancing-vs-passive-strategies-for-uniswap-v3-liquidity-pools-754f033bdabc ( simulating returns is not fully clear ) 
 
 
 
 
 
-
-	How is tick spacing directly proportional to swap fee ? lets say alice create pool of ETH/DAI with 0.05% of swap fees then this statement would be falsify 
-	
-	Does x * y = k calculated after every swap takes place ? if not then how can AMM determine the real reserves ? 
+Article1: https://medium.com/gamma-strategies/expected-price-range-strategies-in-uniswap-v3-833dff253f84
+Article2: https://medium.com/@DeFiScientist/rebalancing-vs-passive-strategies-for-uniswap-v3-liquidity-pools-754f033bdabc
+Article3: https://medium.com/gamma-strategies/the-costs-of-uniswap-v3-active-management-7dd1c160fdd
+Article4: https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223 (well explained)
+Article5: https://credmark.com/blog/a-technical-analysis-of-uniswap-v3
+Article6: https://xord.com/research/uniswap-v3-power-to-liquidity-providers/ (Xord Explaination article)
+Article7: https://medium.com/charmfinance/introducing-alpha-vaults-an-lp-strategy-for-uniswap-v3-ebf500b67796 
