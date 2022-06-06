@@ -108,6 +108,7 @@ The three strategies considered are:
 Uniform strategy: liquidity is provided uniformly within the expected price range, as is the default in Uniswap v3.
 Proportional strategy: liquidity within the expected price range is allocated in sub-bins within the range, with the intensity of a bin proportional to how likely the price is likely to be there according to Figure 6.
 Optimal strategy: using tools from decision theory, the authors develop a model to estimate the “optimal” range to provide liquidity over, having as a parameter the degree of “risk aversion” of the liquidity provider.
+
 DeFi Scientist article:
 The idea is to choose a base liquidity range symmetric around the current price [Current -B, Current+B] and to rebalance regularly (let’s assume twice a day). As the token price moves, our initial ratio (50/50 each asset) will drift. As our token price decreases, we buy more of the token and inversely as it increases.
 
@@ -119,13 +120,49 @@ Instead, Alpha Vaults only passively rebalances, placing a narrow range order on
 liquidity ratio high hoony ka mtlb kiya he ?
 written somewhere that:  active vaults perform much better when fees/liquidity ratio is high. so it would make sense to initially deploy strategies for those high earning pools only.
 As we can see the returns of a rebalancing strategy depend on the level of realized return volatility. The strategy is expected to outperform in a trending market but underperform in a choppy market.
-Cost of uniswap active management
+
+Cost of uniswap active management:
 First, let’s look at the number of resets implied by the strategy. As we described before, with a longer time interval, fewer resets are required. The very volatile month of May leads the numbers of resets, with 1,876 for the 10-minute interval, 236 for 120-minute interval, and 63 for 1,440-minute interval. The relatively quiet month of June required much fewer resets (852, 87, and 18 respectively), thus as predicted in the beginning, periods with more price volatility imply more resets.
 10 minutes rebase = 1008 rebases in a week (144/day)
 30 minutes rebase = 336   rebases in a week (24/day) 
 350,000 Gwei for setting or removing positions in uniswap v3 
 
+TAIPEI Article Revision:
+The price range of each tick is predefined by the system instead of being proposed by users.
+Q: It means if we pick a tick i.e. 87888, the price will always be the same regardless of reverses ?
+For tick variable, The reason for a signed integer int instead of an uint is that negative power represents prices less than 1 but greater than 0.
+The answer to this question is rather easy, as we know that p(i) = 1.0001^i, simply takes a log with base 1.0001 on both sides of the equation⁴: 
+Let’s try this out, say we wanna find out the tick index of 1000000.
+Now, 1.0001¹³⁸¹⁶² = 999,998.678087146. Voila!
+Qs: Explanation 
+As each tick has a different liquidity depth, the corresponding pricing function x * y = k also won’t be the same!
+Say the original pricing function is 100(x) * 1000(y) = 100000(k), with the price of X token 1000 / 100 = 10 and we’re now in an arbitrary price range [9.08, 11.08].
 
+If the liquidity of the price range [11.08, 13.08] is the same as [9.08, 11.08], we don’t have to modify the pricing function if the price goes from 10 to 11.08, which is the boundary between two ticks.
+
+The price of X is 1052.63 / 95 = 11.08 when the equation is 1052.63 * 95 = 100000.
+Qs: if i'm not mistaken, this price is calculated from p(i) = 1.0001^i
+https://tinyurl.com/root-in-liquidity 
+Qs: why this root in liquidity ? doesn't it keep decreasing the constant product value ?
+Let’s say if I provide liquidity in the range [1200, 2800], the capital efficiency will then be 4.24x higher than v2 with the range [0,∞] 😮 There’s a capital efficiency comparison calculator, make sure to try it out!
+Qs: how is this capital efficiency being calculated. 
+Depending on the current price and the targeted price range, there are three scenarios:
+
+1: current price belongs to the targeted price range
+2: current price < the targeted price range
+3: current price > the targeted price range
+These three scenarios have disparities in whether both or only one of the two tokens and also the number of (which) tokens is required/allowed when providing liquidity.
+1.001499988 = √(1.0001 * 1.0002) is the geometric mean of 1.0001 and 1.0002. The implication is that the geometric mean of two prices is the average execution price within the range of the two prices.
+Thus, providing liquidity on v3, namely range orders, are essentially fee-earning reversible limit orders
+Credmark article:
+ic  = log √1.0001 √p (log base √1.0001 times √p)
+Calculating current tick based on sqrt(price)
+
+p(i) = 1.0001^i
+Calculating price based on current tick
+To calculate price at any position: p = √(y/x)
+To calculate liquidity at any position: L = √(x*y)
+What is the ratio of rebalancing vs fee earned ? Does the fee earned compensates the charges of rebasing fee ? 
 
 
 
@@ -160,15 +197,16 @@ https://medium.com/gamma-strategies/expected-price-range-strategies-in-uniswap-v
 https://medium.com/charmfinance/introducing-alpha-vaults-an-lp-strategy-for-uniswap-v3-ebf500b67796 
 https://medium.com/@DeFiScientist/rebalancing-vs-passive-strategies-for-uniswap-v3-liquidity-pools-754f033bdabc ( simulating returns is not fully clear ) 
 https://medium.com/gamma-strategies/the-costs-of-uniswap-v3-active-management-7dd1c160fdd 
+https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223 
 
 
 
 
 
-Article1: https://medium.com/gamma-strategies/expected-price-range-strategies-in-uniswap-v3-833dff253f84
-Article2: https://medium.com/@DeFiScientist/rebalancing-vs-passive-strategies-for-uniswap-v3-liquidity-pools-754f033bdabc
-Article3: https://medium.com/gamma-strategies/the-costs-of-uniswap-v3-active-management-7dd1c160fdd
-Article4: https://medium.com/taipei-ethereum-meetup/uniswap-v3-features-explained-in-depth-178cfe45f223 (well explained)
 Article5: https://credmark.com/blog/a-technical-analysis-of-uniswap-v3
-Article6: https://xord.com/research/uniswap-v3-power-to-liquidity-providers/ (Xord Explaination article)
+Article6: https://xord.com/research/uniswap-v3-power-to-liquidity-providers/ (Xord Explanation article)
 Article7: https://medium.com/charmfinance/introducing-alpha-vaults-an-lp-strategy-for-uniswap-v3-ebf500b67796 
+
+Miscellaneous :
+The price of tokens are calculated through the reserves in liquidity pools and maintained by arbitrageurs.
+Even comparatively more no. of tokens are being on hold by users. It means a very small amount of tokens are being used to decide the price of all tokens. 
